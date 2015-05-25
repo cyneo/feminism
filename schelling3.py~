@@ -1,0 +1,264 @@
+from tkinter import Frame, Canvas, Button, Label, Scale
+import tkinter as tk
+import random
+
+# master = tk.Tk()
+# master.geometry('600x600+200+200')
+# master.title('Teck Liang Handsome Like Shit')
+
+# colordict = {1: 'red',
+#              2: 'green',
+#              3: 'orange',
+#              4: 'white',
+#              5: 'yellow',
+#              6: 'blue'}
+
+# grid_size = (30, 30)
+# for m in range(grid_size[0]):
+#     for n in range(grid_size[1]):
+#         tk.Canvas(bg=colordict[random.randint(1, 6)],
+#                   relief=tk.SUNKEN,
+#                   height=5,
+#                   width=5).grid(row=m, column=n)
+
+
+# master.mainloop()
+'''
+colours = ['red', 'green', 'orange', 'white', 'yellow', 'blue']
+r = 0
+
+for c in colours:
+    tk.Label(text=c, relief=tk.RIDGE, width=15).grid(row=r, column=0)
+    tk.Entry(bg=c, relief=tk.SUNKEN, width=10).grid(row=r, column=1)
+    r = r + 1
+'''
+
+
+class Visual(Frame):
+    """
+    Frame to hold all the different graphics in the GUI
+    """
+    def __init__(self):
+        Frame.__init__(self)  # Calling parent class
+        # Creating master level for other pieces to live on
+        self.master.title('The Schelling Model in Python')
+        self.master.wm_resizable(0, 0)  # Stops resizing of window
+        self.grid()
+        self.movement_possible = True
+
+        self.userIn()  # Calls method to create user input
+        self.buttonPane()  # Calls method to create button pane
+
+        #
+        #    User Entry Pane
+        #
+    def userIn(self):
+        # Creating a pane for user values:
+        self._userIn = Frame(self,
+                             borderwidth=5)
+        # Stick this pane to top left corner of master
+        self._userIn.grid(row=0, column=0, sticky='n')
+
+        # Creating label for Number of agents
+        self._dimlabel = Label(self._userIn,
+                               anchor='w',
+                               justify='left',
+                               text="N X N:",
+                               relief='raised',
+                               width=12,
+                               height=1,
+                               font="italic 20")
+        self._dimlabel.grid(row=0, column=0, ipady=14)
+        
+        # Creating Scale for dim
+        self._dim = Scale(self._userIn,
+                          from_=10,
+                          to=100,
+                          resolution=1,
+                          bd=3,
+                          relief='sunken',
+                          orient='horizontal',
+                          length=235,
+                          tickinterval=10)
+
+        # Set default value for dim
+        self._dim.set(30)
+
+        # Placing dim into _userIn
+        self._dim.grid(row=0, column=1)
+
+        # Creating properties for fill property
+        self.fill_label = Label(self._userIn,
+                                anchor='w',
+                                justify='left',
+                                text='% Populated:',
+                                relief='raised',
+                                font='italic 20',
+                                height=1,
+                                width=12)
+
+        # Placing into _userIn
+        self.fill_label.grid(row=1, column=0)
+
+        # Creating Scale for fill
+        self.fill = Scale(self._userIn,
+                          from_=0,
+                          to=100,
+                          resolution=1,
+                          bd=3,
+                          relief='sunken',
+                          orient='horizontal',
+                          length=235,
+                          tickinterval=10)
+        # Setting default value for fill
+        self.fill.set(70)
+
+        # Placing into _userIn
+        self.fill.grid(row=1, column=1)
+
+        # Creating label for threshold
+        self._Similar_label = Label(self._userIn,
+                                    anchor='w',
+                                    justify='left',
+                                    text="Similar wanted:",
+                                    relief='raised',
+                                    width=12,
+                                    height=1,
+                                    font="bold 20")
+
+        # Placing threshold label into _userIn
+        self._Similar_label.grid(row=2, column=0, ipady=14)
+ 
+        # Creating Scale for threshold
+        self._Similar = Scale(self._userIn,
+                              from_=0.0,
+                              to=1.0,
+                              resolution=0.01,
+                              bd=3,
+                              relief='sunken',
+                              orient='horizontal',
+                              length=235,
+                              tickinterval=1)
+
+        # Setting default value for threshold
+        self._Similar.set(0.50)
+
+        # Placing Scale onto _userIn
+        self._Similar.grid(row=2, column=1)
+
+        # Creating properties for time step property
+        self.time_label = Label(self._userIn,
+                                anchor='w',
+                                justify='left',
+                                text='Time:',
+                                relief='raised',
+                                font='italic 20',
+                                height=1,
+                                width=12)
+
+        # Placing into _userIn
+        self.time_label.grid(row=3, column=0)
+
+        # Creating Scale for time steps
+        self.time = Scale(self._userIn,
+                          from_=0,
+                          to=1000,
+                          resolution=1,
+                          bd=3,
+                          relief='sunken',
+                          orient='horizontal',
+                          length=235,
+                          tickinterval=200)
+        # Setting default value for fill
+        self.time.set(500)
+
+        # Placing into _userIn
+        self.time.grid(row=3, column=1)
+
+    #
+    #    Button Panel
+    #
+
+    def buttonPane(self):
+        # Creating button panel
+        self.button_pane = Frame(self,
+                                 borderwidth=5)
+        # Placing button pane onto master
+        self.button_pane.grid(row=1, column=0)
+
+        # Creating button for 'Setup'
+        self.setupButton = Button(self.button_pane,
+                                  text="Setup",
+                                  command=self._setup,
+                                  width=7,
+                                  height=1,
+                                  font="bold 30",
+                                  relief='raised',
+                                  borderwidth=5)
+
+        # Placing 'Setup' button onto button pane
+        self.setupButton.grid(row=0, column=0)
+
+        # Creating button for 'Run'
+        self.runButton = Button(self.button_pane,
+                                text="Run",
+                                command=self._run,
+                                width=7,
+                                height=1,
+                                font="bold 30",
+                                relief='raised',
+                                borderwidth=5)
+
+        # Placing 'Run' button onto button pane
+        self.runButton.grid(row=0, column=1)
+
+        # Creating button for 'Quit'
+        self.quitButton = Button(self.button_pane,
+                                 text="Quit",
+                                 command=self._quit,
+                                 width=7,
+                                 height=1,
+                                 font="bold 30",
+                                 relief='raised',
+                                 borderwidth=5)
+
+        # Placing 'Quit' button onto button pane
+        self.quitButton.grid(row=1, column=0)
+    #
+    #    Creating functions for buttons
+    #
+
+    # 'Setup' button functionality
+    def _setup(self):
+        print('Setting Up')
+
+    # 'Run' button functionality
+    def _run(self):
+        print('Heyo')
+        pass
+
+    # 'Quit' button functionality
+    def _quit(self):
+        '''Method for the 'Quit' button.'''
+        self.master.destroy()
+    
+    #
+    #    Housing Grid
+    #
+    def houseGrid(self):
+        # Frame for housing map
+        self.housing_grid = Canvas(self,
+                                   borderwidth=5,
+                                   relief='sunken',
+                                   bg='black')
+        
+        self.something = Label(self.housing_grid,
+                               text='a',
+                               font='bold 20')
+        self.something.grid(row=0, column=0)
+
+        # Setting housing map frame into master
+        self.housing_grid.grid(row=0, column=1, sticky='ne',
+                               rowspan=5, pady=10, padx=10)
+
+

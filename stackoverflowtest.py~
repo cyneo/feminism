@@ -1,0 +1,36 @@
+#! /usr/local/python-3.4.1/bin/python3.4
+
+# SciPy Sparse linear algebra takes care of sparse matrix computations
+# http://docs.scipy.org/doc/scipy/reference/sparse.linalg.html
+import scipy.sparse as sp
+import scipy.sparse.linalg as la
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pylab
+
+# discretize x-axis
+N = 1100
+x = np.linspace(-100, 100, N)
+V = x * x / 2.
+h = len(x)/(N)
+hi2 = 1./(h**2)
+
+# discretize Schroedinger Equation, i.e. build
+# banded matrix from difference equation
+C0 = np.ones(N)*30. + V
+C1 = np.ones(N) * -16.
+C2 = np.ones(N) * 1.
+
+H = sp.spdiags([C2, C1, C0, C1, C2], [-2, -1, 0, 1, 2], N, N, format='dok')
+H *= hi2 * (- 1./12.) * (- 1. / 2.)
+H[0, 0] = 0
+H[0, 1] = 0
+H[0, 2] = 0
+
+# check structure of H
+plt.figure()
+plt.spy(H)
+pylab.savefig('image.png', bbox_inches='tight')
+
+EV = la.eigsh(H, return_eigenvectors=False)

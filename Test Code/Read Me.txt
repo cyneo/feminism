@@ -1,0 +1,1 @@
+Folder contains code snippets that I wrote while learning syntax
