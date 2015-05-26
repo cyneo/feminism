@@ -1,6 +1,0 @@
-from std_pack import *
-
-df1 = pd.DataFrame(np.random.randint(0, 5, (2, 3)),
-                   index=['holy', 'panda'],
-                   columns=['not', 'really', 'honey'])
-
