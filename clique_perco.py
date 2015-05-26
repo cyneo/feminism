@@ -42,13 +42,17 @@ def hierarchical(graph):
                                                   method='complete')
     dendrogram = scipy.cluster.hierarchy.dendrogram(linkage_mat,
                                                     distance_sort='descending')
+    plt.savefig(thesaurus_path + 'dendrogram.svg',
+                format='svg', dpi=1200)
     node_order = dendrogram['leaves']
     overlap_mat = overlap_mat[node_order, :]
     overlap_mat = overlap_mat[:, node_order]
     fig = plt.figure()
     plt.imshow(overlap_mat)
+    plt.savefig(thesaurus_path + 'implot of clique clique overlap.svg',
+                format='svg', dpi=1200)
     plt.show()
-    return listofcliques
+    # return listofcliques
     pass
 
 
@@ -80,13 +84,13 @@ def sorted_adj_mat(overlap_mat, node_order=None, partitions=[], colors=[]):
         current_idx = 0
         for module in partition:
             ax.add_patch(patches.Rectangle((current_idx, current_idx),
-                                           len(module), # Width
-                                           len(module), # Height
+                                           len(module),  # Width
+                                           len(module),  # Height
                                            facecolor="none",
                                            edgecolor=color,
                                            linewidth="1"))
             current_idx += len(module)
-    plt.savefig(thesaurus_path + 'sorted adj mat.png')
+    plt.savefig(thesaurus_path + 'sorted adj mat.svg', format='svg', dpi=1200)
 
 
 def something(k_value):
