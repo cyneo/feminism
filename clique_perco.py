@@ -4,6 +4,7 @@ from std_pack import *
 import copy
 from scipy import spatial, cluster
 
+jiggle
 
 def clique_overlap(listofcliques):
     """
@@ -35,21 +36,45 @@ def hierarchical(graph):
     D = D[index,:]
     D = D[:,index]
     """
+    # What i am tracking is the clique numbers and not the word numbers
+    # Create list of cliques in the graph
     listofcliques = clique_search(graph)
+    # Overlap matrix
     overlap_mat = clique_overlap(listofcliques)
-    # What i am tracking is theclique numbers and not the word numbers
+    # Creating distance matrix
+    
+    # Creating linkage array
     linkage_mat = scipy.cluster.hierarchy.linkage(overlap_mat,
                                                   method='complete')
+    # Creating the dendrogram
     dendrogram = scipy.cluster.hierarchy.dendrogram(linkage_mat,
                                                     distance_sort='descending')
+<<<<<<< Updated upstream
+=======
+    # Saving the dendrogram
+    plt.savefig(thesaurus_path + 'dendrogram.svg',
+                format='svg', dpi=1200)
+    # Getting node order for the implot later on
+>>>>>>> Stashed changes
     node_order = dendrogram['leaves']
+    # Reordering the nodes for implot
     overlap_mat = overlap_mat[node_order, :]
     overlap_mat = overlap_mat[:, node_order]
+    # Plotting the figure
     fig = plt.figure()
     plt.imshow(overlap_mat)
+<<<<<<< Updated upstream
     plt.show()
     return listofcliques
     pass
+=======
+    # Saving implot
+    plt.savefig(thesaurus_path + 'implot of clique clique overlap.svg',
+                format='svg', dpi=1200)
+    plt.show()
+    # return listofcliques
+    return dendrogram
+>>>>>>> Stashed changes
 
 
 def sorted_adj_mat(overlap_mat, node_order=None, partitions=[], colors=[]):
