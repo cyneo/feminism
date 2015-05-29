@@ -4,27 +4,6 @@ from std_pack import *
 import copy
 from scipy import spatial, cluster
 
-jiggle
-
-def clique_overlap(listofcliques):
-    """
-    To do the clique clique overlap, i will need to create a matrix
-    of some sort and then add values to it.
-    """
-    # Initialize the matrix
-    overlap_mat = np.ndarray((len(listofcliques), len(listofcliques)))
-
-    # Calculating the overlap
-    for m in range(len(listofcliques)):
-        for n in range(len(listofcliques)):
-            overlap_mat[m][n] = len(listofcliques[m] & listofcliques[n])
-
-    # pickle.dump(overlap_mat, open(thesaurus_path +
-    #                               'Clique Overlap Matrix.p',
-    #                               'wb'),
-    #             protocol=4)
-    return overlap_mat
-
 
 def hierarchical(graph):
     """
@@ -49,13 +28,11 @@ def hierarchical(graph):
     # Creating the dendrogram
     dendrogram = scipy.cluster.hierarchy.dendrogram(linkage_mat,
                                                     distance_sort='descending')
-<<<<<<< Updated upstream
-=======
+
     # Saving the dendrogram
     plt.savefig(thesaurus_path + 'dendrogram.svg',
                 format='svg', dpi=1200)
     # Getting node order for the implot later on
->>>>>>> Stashed changes
     node_order = dendrogram['leaves']
     # Reordering the nodes for implot
     overlap_mat = overlap_mat[node_order, :]
@@ -63,18 +40,57 @@ def hierarchical(graph):
     # Plotting the figure
     fig = plt.figure()
     plt.imshow(overlap_mat)
-<<<<<<< Updated upstream
     plt.show()
     return listofcliques
-    pass
-=======
+    
     # Saving implot
     plt.savefig(thesaurus_path + 'implot of clique clique overlap.svg',
                 format='svg', dpi=1200)
     plt.show()
     # return listofcliques
     return dendrogram
->>>>>>> Stashed changes
+
+
+def distance(overlap_mat):
+    """
+    Measures distance by calculating correlation and taking 1 - corr
+    """
+    """
+    measure correlation by making use of overlap/lower size.
+    """
+    for m in range(len(overlap_mat)):
+        for n in range(len(overlap_mat[m])):
+            if m <= n:
+                size = overlap_mat[n][n]
+                overlap_mat[m][n] = overlap_mat[m][n]/size
+    distance = 1 - overlap_mat
+    pdist = []
+    for m in range(len(distance)):
+        for n in range(len(distance[m])):
+            if m < n:
+                pdist.append(distance[m][n])
+
+    return pdist
+
+
+def clique_overlap(listofcliques):
+    """
+    To do the clique clique overlap, i will need to create a matrix
+    of some sort and then add values to it.
+    """
+    # Initialize the matrix
+    overlap_mat = np.ndarray((len(listofcliques), len(listofcliques)))
+
+    # Calculating the overlap
+    for m in range(len(listofcliques)):
+        for n in range(len(listofcliques)):
+            overlap_mat[m][n] = len(listofcliques[m] & listofcliques[n])
+
+    # pickle.dump(overlap_mat, open(thesaurus_path +
+    #                               'Clique Overlap Matrix.p',
+    #                               'wb'),
+    #             protocol=4)
+    return overlap_mat
 
 
 def sorted_adj_mat(overlap_mat, node_order=None, partitions=[], colors=[]):
